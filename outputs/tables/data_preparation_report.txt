@@ -1,0 +1,17 @@
+DATA PREPARATION REPORT
+=======================
+
+Date: 20565 
+
+Initial data: 3000 × 18 
+Final data: 3000 × 18 
+
+Numeric variables: 15 
+Categorical variables: 3 
+
+Missing values handled: None found
+Outliers detected and treated
+Normalization applied: Z-score standardization
+
+Variables in final dataset:
+Average_Salary, Years_Experience, AI_Exposure_Index, Tech_Growth_Factor, Automation_Probability_2030, Skill_1, Skill_2, Skill_3, Skill_4, Skill_5, Skill_6, Skill_7, Skill_8, Skill_9, Skill_10, Job_Title, Education_Level, Risk_Category 

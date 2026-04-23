@@ -1,0 +1,74 @@
+AI Impact on Jobs 2030 - Initial Data Summary
+==============================================
+
+Date: 20565 
+Dataset Dimensions: 3000 × 18 
+
+Variable Names:
+Job_Title, Average_Salary, Years_Experience, Education_Level, AI_Exposure_Index, Tech_Growth_Factor, Automation_Probability_2030, Risk_Category, Skill_1, Skill_2, Skill_3, Skill_4, Skill_5, Skill_6, Skill_7, Skill_8, Skill_9, Skill_10 
+
+Data Structure:
+'data.frame':	3000 obs. of  18 variables:
+ $ Job_Title                  : chr  "Security Guard" "Research Scientist" "Construction Worker" "Software Engineer" ...
+ $ Average_Salary             : int  45795 133355 146216 136530 70397 92592 107373 53419 139225 85016 ...
+ $ Years_Experience           : int  28 20 2 13 22 11 23 12 12 2 ...
+ $ Education_Level            : chr  "Master's" "PhD" "High School" "PhD" ...
+ $ AI_Exposure_Index          : num  0.18 0.62 0.86 0.39 0.52 0.29 0.67 0.2 0.3 0.01 ...
+ $ Tech_Growth_Factor         : num  1.28 1.11 1.18 0.68 1.46 0.51 1.09 1.4 0.61 1.01 ...
+ $ Automation_Probability_2030: num  0.85 0.05 0.81 0.6 0.64 0.1 0.41 0.17 0.48 0.8 ...
+ $ Risk_Category              : chr  "High" "Low" "High" "Medium" ...
+ $ Skill_1                    : num  0.45 0.02 0.01 0.43 0.75 0.71 0.56 0.56 0.22 0.22 ...
+ $ Skill_2                    : num  0.1 0.52 0.94 0.21 0.54 0.79 0.38 0.7 0.42 0.12 ...
+ $ Skill_3                    : num  0.46 0.4 0.56 0.57 0.59 0.61 0.97 0.14 0.88 0.34 ...
+ $ Skill_4                    : num  0.33 0.05 0.39 0.03 0.97 0.93 0.85 0.6 0.32 0.94 ...
+ $ Skill_5                    : num  0.14 0.97 0.02 0.84 0.61 0.65 0.72 0.54 0.12 0.32 ...
+ $ Skill_6                    : num  0.65 0.23 0.23 0.45 0.28 0.91 0.24 0.2 0.36 0.52 ...
+ $ Skill_7                    : num  0.06 0.09 0.24 0.4 0.3 0.85 0.26 0.94 0.91 0.7 ...
+ $ Skill_8                    : num  0.72 0.62 0.68 0.93 0.17 0.45 0.04 0.6 0.27 0.36 ...
+ $ Skill_9                    : num  0.94 0.38 0.61 0.73 0.02 0.1 0.71 0.69 0.65 0.97 ...
+ $ Skill_10                   : num  0 0.98 0.83 0.33 0.42 0.37 0.11 0.88 0 0.96 ...
+NULL
+
+ Summary Statistics:
+  Job_Title         Average_Salary   Years_Experience
+ Length:3000        Min.   : 30030   Min.   : 0.00   
+ Class :character   1st Qu.: 58640   1st Qu.: 7.00   
+ Mode  :character   Median : 89318   Median :15.00   
+                    Mean   : 89372   Mean   :14.68   
+                    3rd Qu.:119087   3rd Qu.:22.00   
+                    Max.   :149798   Max.   :29.00   
+ Education_Level    AI_Exposure_Index Tech_Growth_Factor
+ Length:3000        Min.   :0.0000    Min.   :0.5000    
+ Class :character   1st Qu.:0.2600    1st Qu.:0.7400    
+ Mode  :character   Median :0.5000    Median :1.0000    
+                    Mean   :0.5013    Mean   :0.9953    
+                    3rd Qu.:0.7400    3rd Qu.:1.2400    
+                    Max.   :1.0000    Max.   :1.5000    
+ Automation_Probability_2030 Risk_Category         Skill_1     
+ Min.   :0.0500              Length:3000        Min.   :0.000  
+ 1st Qu.:0.3100              Class :character   1st Qu.:0.240  
+ Median :0.5000              Mode  :character   Median :0.505  
+ Mean   :0.5015                                 Mean   :0.497  
+ 3rd Qu.:0.7000                                 3rd Qu.:0.740  
+ Max.   :0.9500                                 Max.   :1.000  
+    Skill_2          Skill_3          Skill_4      
+ Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:0.2500   1st Qu.:0.2500   1st Qu.:0.2600  
+ Median :0.5000   Median :0.5000   Median :0.5100  
+ Mean   :0.4972   Mean   :0.4993   Mean   :0.5037  
+ 3rd Qu.:0.7400   3rd Qu.:0.7500   3rd Qu.:0.7500  
+ Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  
+    Skill_5          Skill_6          Skill_7      
+ Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:0.2400   1st Qu.:0.2600   1st Qu.:0.2500  
+ Median :0.4900   Median :0.5000   Median :0.4900  
+ Mean   :0.4903   Mean   :0.4998   Mean   :0.4992  
+ 3rd Qu.:0.7300   3rd Qu.:0.7400   3rd Qu.:0.7500  
+ Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  
+    Skill_8          Skill_9          Skill_10     
+ Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+ 1st Qu.:0.2500   1st Qu.:0.2600   1st Qu.:0.2500  
+ Median :0.5000   Median :0.5000   Median :0.4900  
+ Mean   :0.5028   Mean   :0.5014   Mean   :0.4936  
+ 3rd Qu.:0.7500   3rd Qu.:0.7400   3rd Qu.:0.7400  
+ Max.   :1.0000   Max.   :1.0000   Max.   :1.0000  

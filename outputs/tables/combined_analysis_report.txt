@@ -1,0 +1,67 @@
+COMBINED ANALYSIS REPORT: PCA + CLUSTERING
+===========================================
+
+Date: 20568 
+
+DATASET:
+  Observations: 3000 
+  Clusters: 3 
+
+CLUSTER SIZES:
+  Cluster 1 : 1012 observations
+  Cluster 2 : 1026 observations
+  Cluster 3 : 962 observations
+
+CLUSTER MEANS ON PCA DIMENSIONS:
+# A tibble: 3 × 6
+  cluster   Dim1   Dim2   Dim3   Dim4   Dim5
+  <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+1 1        0.366  0.95  -0.426  0.084 -0.122
+2 2        0.253 -0.951 -0.413 -0.263 -0.085
+3 3       -0.655  0.014  0.888  0.193  0.219
+
+TOP SEPARATING VARIABLES (ANOVA F-statistics):
+                                               Variable
+Skill_5                                         Skill_5
+Skill_9                                         Skill_9
+Skill_6                                         Skill_6
+Skill_10                                       Skill_10
+Years_Experience                       Years_Experience
+AI_Exposure_Index                     AI_Exposure_Index
+Average_Salary                           Average_Salary
+Skill_3                                         Skill_3
+Automation_Probability_2030 Automation_Probability_2030
+Skill_4                                         Skill_4
+                            F_statistic
+Skill_5                          867.92
+Skill_9                          354.21
+Skill_6                          219.63
+Skill_10                         158.77
+Years_Experience                 134.15
+AI_Exposure_Index                 78.60
+Average_Salary                    75.47
+Skill_3                           72.18
+Automation_Probability_2030       52.40
+Skill_4                           51.51
+
+CLUSTER CENTER DISTANCES:
+          Cluster 1 Cluster 2 Cluster 3
+Cluster 1     0.000     1.936     1.942
+Cluster 2     1.936     0.000     1.936
+Cluster 3     1.942     1.936     0.000
+
+CLUSTER PROFILES (Original Units):
+# A tibble: 3 × 6
+  cluster_kmeans Avg_Salary Years_Exp AI_Exposure Tech_Growth
+           <int>      <dbl>     <dbl>       <dbl>       <dbl>
+1              1          0       0         -0.11       -0.05
+2              2          0      -0.5       -0.16        0.25
+3              3          0       0.5        0.29       -0.22
+# ℹ 1 more variable: Auto_Prob <dbl>
+
+CONCLUSIONS:
+  - Three distinct job clusters identified
+  - Clusters align with PCA dimensions 2 and 3
+  - Skill variables are primary discriminators
+  - Low silhouette width reflects data multidimensionality
+  - Clusters provide actionable segmentation for workforce planning

@@ -1,0 +1,7 @@
+"Metric","Value"
+"Total observations","3,000"
+"Number of clusters","3"
+"PCA dimensions (80% variance)","12"
+"Silhouette width","0.131"
+"Top discriminator F-statistic","867.92 (Skill_5)"
+"High risk jobs %","34.2%"

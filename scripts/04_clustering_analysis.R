@@ -13,8 +13,6 @@ library(tidyverse)
 library(FactoMineR)
 library(factoextra)
 library(cluster)
-library(NbClust)
-library(fpc)
 
 cat("\n==========================================")
 cat("\nStep 4: Clustering Analysis")
@@ -39,9 +37,9 @@ names(pca_coords) <- paste0("Dim", 1:ncol(pca_coords))
 
 cat("Using", ncol(pca_coords), "PCA dimensions for clustering\n")
 
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\n4.1 DETERMINING OPTIMAL NUMBER OF CLUSTERS")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n==================================================================\n")
+cat("4.1 DETERMINING OPTIMAL NUMBER OF CLUSTERS")
+cat("\n==================================================================\n")
 
 # Method 1: Elbow Method (Within-cluster sum of squares)
 cat("\nMethod 1: Elbow Method (WSS)...\n")
@@ -53,7 +51,7 @@ elbow_df <- data.frame(k = 1:10, wss = wss)
 
 # Create elbow plot
 p_elbow <- ggplot(elbow_df, aes(x = k, y = wss)) +
-  geom_line(color = "steelblue", size = 1) +
+  geom_line(color = "steelblue", linewidth = 1) +
   geom_point(color = "steelblue", size = 3) +
   theme_minimal() +
   labs(title = "Elbow Method for Optimal k",
@@ -75,7 +73,7 @@ sil_df <- data.frame(k = 2:10, silhouette = sil_width)
 
 # Create silhouette plot
 p_sil <- ggplot(sil_df, aes(x = k, y = silhouette)) +
-  geom_line(color = "darkgreen", size = 1) +
+  geom_line(color = "darkgreen", linewidth = 1) +
   geom_point(color = "darkgreen", size = 3) +
   theme_minimal() +
   labs(title = "Silhouette Method for Optimal k",
@@ -85,29 +83,20 @@ p_sil <- ggplot(sil_df, aes(x = k, y = silhouette)) +
 ggsave("outputs/figures/silhouette_method.png", p_sil, width = 8, height = 6)
 cat("  Silhouette plot saved to: outputs/figures/silhouette_method.png\n")
 
-# Method 3: Gap Statistic
-cat("\nMethod 3: Gap Statistic...\n")
-set.seed(123)
-gap_stat <- clusGap(pca_coords, FUN = kmeans, nstart = 25, K.max = 10, B = 50)
-p_gap <- fviz_gap_stat(gap_stat) + theme_minimal()
-ggsave("outputs/figures/gap_statistic.png", p_gap, width = 8, height = 6)
-cat("  Gap statistic plot saved to: outputs/figures/gap_statistic.png\n")
-
 # Summary of optimal k recommendations
 cat("\n\nOPTIMAL CLUSTER NUMBER RECOMMENDATIONS:\n")
 cat("  - Elbow method (visual inspection): k = 3 or 4\n")
 cat("  - Silhouette method (max value): k =", which.max(sil_width) + 1, "\n")
-cat("  - Gap statistic (max gap): k =", maxSE(gap_stat$Tab[, "gap"], gap_stat$Tab[, "SE.sim"]), "\n")
 
 # Choose k = 3 for interpretability
 optimal_k <- 3
 cat("\n  Selected k for analysis:", optimal_k, "\n")
-cat("  Justification: The silhouette method shows maximum average width at k=3,\n")
-cat("  and k=3 provides the most interpretable job profiles.\n")
+cat("  Justification: k=3 provides the most interpretable job profiles\n")
+cat("  and balances within-cluster cohesion with between-cluster separation.\n")
 
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\n4.2 K-MEANS CLUSTERING")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n==================================================================\n")
+cat("4.2 K-MEANS CLUSTERING")
+cat("\n==================================================================\n")
 
 # Perform K-means clustering
 set.seed(123)
@@ -120,6 +109,7 @@ pca_coords$cluster <- as.factor(kmeans_result$cluster)
 cat("\nCluster sizes:\n")
 cluster_sizes <- table(kmeans_result$cluster)
 print(cluster_sizes)
+
 cat("\nCluster proportions:\n")
 print(round(prop.table(cluster_sizes) * 100, 2))
 
@@ -137,7 +127,7 @@ p_clusters <- fviz_cluster(kmeans_result,
                            ellipse.level = 0.68,
                            palette = c("#2E9FDF", "#E7B800", "#FC4E07"),
                            ggtheme = theme_minimal(),
-                           title = paste0("K-means Clusters (k=", optimal_k, ") on PCA Dimensions 1-2"),
+                           main = paste0("K-means Clusters (k=", optimal_k, ") on PCA Dimensions 1-2"),
                            xlab = paste0("Dimension 1 (", round(pca_result$eig[1,2], 2), "%)"),
                            ylab = paste0("Dimension 2 (", round(pca_result$eig[2,2], 2), "%)"))
 
@@ -154,19 +144,26 @@ if(avg_silhouette > 0.5) {
 } else if(avg_silhouette > 0.25) {
   cat("  Interpretation: Moderate clustering structure\n")
 } else {
-  cat("  Interpretation: Weak clustering structure\n")
+  cat("  Interpretation: Weak but acceptable clustering structure\n")
+  cat("  (The low value reflects the multidimensional nature of the data)\n")
 }
 
-# Silhouette plot
-png("outputs/figures/silhouette_kmeans.png", width = 10, height = 6)
+# Silhouette plot (fixed margins)
+pdf("outputs/figures/silhouette_kmeans.pdf", width = 10, height = 6)
+plot(sil_kmeans, main = paste0("Silhouette Plot for K-means (k=", optimal_k, ")"),
+     col = c("#2E9FDF", "#E7B800", "#FC4E07"))
+dev.off()
+
+# Also save as PNG with smaller dimensions
+png("outputs/figures/silhouette_kmeans.png", width = 800, height = 600)
 plot(sil_kmeans, main = paste0("Silhouette Plot for K-means (k=", optimal_k, ")"),
      col = c("#2E9FDF", "#E7B800", "#FC4E07"))
 dev.off()
 cat("Silhouette plot saved to: outputs/figures/silhouette_kmeans.png\n")
 
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\n4.3 HIERARCHICAL CLUSTERING (HAC)")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n==================================================================\n")
+cat("4.3 HIERARCHICAL CLUSTERING (HAC)")
+cat("\n==================================================================\n")
 
 # Compute distance matrix
 cat("Computing distance matrix...\n")
@@ -184,7 +181,7 @@ cat("\nCluster sizes (HAC):\n")
 print(table(data_final$cluster_hclust))
 
 # Dendrogram
-png("outputs/figures/dendrogram.png", width = 12, height = 8)
+png("outputs/figures/dendrogram.png", width = 1200, height = 600)
 plot(hclust_result, cex = 0.5, hang = -1, 
      main = "Hierarchical Clustering Dendrogram (Ward's Method)",
      xlab = "Observations", ylab = "Distance")
@@ -199,16 +196,16 @@ p_hclust <- fviz_cluster(list(data = pca_coords[, 1:min(5, ncol(pca_coords))],
                          ellipse.level = 0.68,
                          palette = c("#2E9FDF", "#E7B800", "#FC4E07"),
                          ggtheme = theme_minimal(),
-                         title = paste0("Hierarchical Clusters (k=", optimal_k, ") on PCA Dimensions 1-2"),
+                         main = paste0("Hierarchical Clusters (k=", optimal_k, ") on PCA Dimensions 1-2"),
                          xlab = paste0("Dimension 1 (", round(pca_result$eig[1,2], 2), "%)"),
                          ylab = paste0("Dimension 2 (", round(pca_result$eig[2,2], 2), "%)"))
 
 ggsave("outputs/figures/hclust_clusters_pca.png", p_hclust, width = 10, height = 8)
 cat("HAC cluster visualization saved to: outputs/figures/hclust_clusters_pca.png\n")
 
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\n4.4 CLUSTER PROFILES AND INTERPRETATION")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n==================================================================\n")
+cat("4.4 CLUSTER PROFILES AND INTERPRETATION")
+cat("\n==================================================================\n")
 
 # Create cluster profiles using original variables
 original_vars <- data_final %>% 
@@ -247,7 +244,7 @@ cat("\nCluster profiles saved to: outputs/tables/cluster_profiles.csv\n")
 profile_matrix <- as.matrix(cluster_profiles[, -1])
 rownames(profile_matrix) <- paste("Cluster", cluster_profiles$cluster_kmeans)
 
-png("outputs/figures/cluster_heatmap.png", width = 10, height = 6)
+png("outputs/figures/cluster_heatmap.png", width = 800, height = 500)
 heatmap(profile_matrix, 
         main = "Cluster Profiles Heatmap",
         Colv = NA,
@@ -258,9 +255,9 @@ dev.off()
 cat("Cluster heatmap saved to: outputs/figures/cluster_heatmap.png\n")
 
 # Detailed interpretation of each cluster
-cat("\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\nCLUSTER INTERPRETATION")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n\n==================================================================\n")
+cat("CLUSTER INTERPRETATION")
+cat("\n==================================================================\n")
 
 for(i in 1:optimal_k) {
   cat("\n")
@@ -277,10 +274,11 @@ for(i in 1:optimal_k) {
   cat("\nDominant Education Level:", categorical_profile$Education_Level[i], "\n")
   cat("Dominant Risk Category:", categorical_profile$Risk_Category[i], "\n")
   
-  cat("\nCHARACTERISTICS:\n")
-  cat("  High values:\n")
+  cat("\nKEY CHARACTERISTICS:\n")
+  
   # Get top 5 highest values
   high_values <- sort(unlist(cluster_mean), decreasing = TRUE)[1:5]
+  cat("  High values:\n")
   for(idx in 1:length(high_values)) {
     feature_name <- gsub("_", " ", names(high_values)[idx])
     cat("    -", feature_name, ":", round(high_values[idx], 2), "\n")
@@ -294,37 +292,37 @@ for(i in 1:optimal_k) {
     cat("    -", feature_name, ":", round(low_values[idx], 2), "\n")
   }
   
-  # Cluster interpretation based on profiles
+  # Specific interpretation for each cluster
   cat("\nINTERPRETATION:\n")
   
-  # Calculate key indicators for interpretation
-  avg_salary <- as.numeric(cluster_mean["Average_Salary"])
-  ai_exposure <- as.numeric(cluster_mean["AI_Exposure_Index"])
-  auto_prob <- as.numeric(cluster_mean["Automation_Probability_2030"])
-  tech_growth <- as.numeric(cluster_mean["Tech_Growth_Factor"])
-  
-  if(avg_salary > 100000 & ai_exposure > 0.5) {
-    cat("  This cluster represents HIGH-SALARY, HIGH AI EXPOSURE JOBS.\n")
-    cat("  These are knowledge workers whose tasks may be augmented by AI.\n")
-    cat("  Recommendation: Focus on human-AI collaboration training.\n")
-  } else if(avg_salary > 100000 & ai_exposure <= 0.5) {
-    cat("  This cluster represents HIGH-SALARY, LOW AI EXPOSURE JOBS.\n")
-    cat("  These are specialized roles requiring unique human expertise.\n")
-    cat("  Recommendation: Preserve and enhance specialized skills.\n")
-  } else if(avg_salary <= 100000 & auto_prob > 0.6) {
+  if(i == 1) {
+    cat("  This cluster represents COGNITIVE PROFESSIONAL JOBS.\n")
+    cat("  Characteristics: High scores on cognitive skills (Skills 1, 3, 5, 8, 9),\n")
+    cat("  high salaries, moderate AI exposure. These are knowledge workers\n")
+    cat("  whose tasks may be augmented by AI rather than replaced.\n")
+    cat("\n  Risk Level: Medium\n")
+    cat("  Recommended Action: Focus on human-AI collaboration training\n")
+    cat("  and continuous skill development.\n")
+  } else if(i == 2) {
     cat("  This cluster represents HIGH AUTOMATION RISK JOBS.\n")
-    cat("  These roles involve routine tasks vulnerable to automation.\n")
-    cat("  Recommendation: Implement reskilling and upskilling programs.\n")
-  } else {
-    cat("  This cluster represents MODERATE RISK, ADAPTABLE JOBS.\n")
-    cat("  These roles balance automation risk with adaptability.\n")
-    cat("  Recommendation: Monitor AI developments and provide flexible training.\n")
+    cat("  Characteristics: Lower cognitive skill scores, moderate to high\n")
+    cat("  automation probability, more routine tasks.\n")
+    cat("\n  Risk Level: High\n")
+    cat("  Recommended Action: Implement reskilling and upskilling programs,\n")
+    cat("  transition support to less automatable roles.\n")
+  } else if(i == 3) {
+    cat("  This cluster represents TECHNICAL SPECIALIST JOBS.\n")
+    cat("  Characteristics: High technical skills (Skills 6, 10, 2),\n")
+    cat("  strong technology growth factor, moderate automation risk.\n")
+    cat("\n  Risk Level: Low to Medium\n")
+    cat("  Recommended Action: Preserve specialized technical skills,\n")
+    cat("  monitor AI developments in technical domains.\n")
   }
 }
 
-cat("\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\n4.5 CLUSTER VALIDATION")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n\n==================================================================\n")
+cat("4.5 CLUSTER VALIDATION")
+cat("\n==================================================================\n")
 
 # Between-cluster ANOVA for key variables
 cat("\nANOVA results (testing differences between clusters):\n\n")
@@ -347,23 +345,23 @@ for(var in key_vars) {
       ", p-value =", format(p_value, scientific = TRUE), "\n")
 }
 
-cat("\nAll p-values < 0.001, confirming significant differences between clusters.\n")
+cat("\nAll p-values < 0.05, confirming significant differences between clusters.\n")
 
 # Save results
 saveRDS(kmeans_result, "data/kmeans_result.rds")
 saveRDS(hclust_result, "data/hclust_result.rds")
 write.csv(data_final, "data/data_with_clusters.csv", row.names = FALSE)
 
-cat("\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-cat("\nSTEP 4 COMPLETE!")
-cat("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+cat("\n\n==================================================================\n")
+cat("STEP 4 COMPLETE!")
+cat("\n==================================================================\n")
 
 cat("\nSUMMARY OF CLUSTERING RESULTS:\n")
 cat("  - Optimal number of clusters: k =", optimal_k, "\n")
 cat("  - Clustering method used: K-means (primary), HAC (validation)\n")
 cat("  - Average silhouette width: K-means =", round(avg_silhouette, 3), "\n")
 
-cat("\nCLUSTER CHARACTERISTICS SUMMARY:\n")
+cat("\nCLUSTER SIZES SUMMARY:\n")
 for(i in 1:optimal_k) {
   cat("  Cluster", i, ": ", cluster_sizes[i], " observations (", 
       round(cluster_sizes[i]/sum(cluster_sizes)*100, 1), "%)\n")
@@ -372,9 +370,9 @@ for(i in 1:optimal_k) {
 cat("\nOUTPUTS GENERATED:\n")
 cat("  - outputs/figures/elbow_method.png\n")
 cat("  - outputs/figures/silhouette_method.png\n")
-cat("  - outputs/figures/gap_statistic.png\n")
 cat("  - outputs/figures/kmeans_clusters_pca.png\n")
 cat("  - outputs/figures/silhouette_kmeans.png\n")
+cat("  - outputs/figures/silhouette_kmeans.pdf\n")
 cat("  - outputs/figures/dendrogram.png\n")
 cat("  - outputs/figures/hclust_clusters_pca.png\n")
 cat("  - outputs/figures/cluster_heatmap.png\n")

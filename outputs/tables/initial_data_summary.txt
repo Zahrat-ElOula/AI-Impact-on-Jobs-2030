@@ -1,7 +1,7 @@
 AI Impact on Jobs 2030 - Initial Data Summary
 ==============================================
 
-Date: 20565 
+Date: 20569 
 Dataset Dimensions: 3000 × 18 
 
 Variable Names:

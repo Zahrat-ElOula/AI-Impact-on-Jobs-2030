@@ -28,13 +28,3 @@ This project uses the [AI Impact on Jobs 2030 Dataset](https://www.kaggle.com/da
 - Python (>= 3.8)
 - RStudio
 
-### Installation
-
-1. Clone the repository
-2. Install required R packages
-3. Install required Python packages: `pip install -r requirements.txt`
-4. Open the project in RStudio
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

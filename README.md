@@ -32,7 +32,7 @@ This project uses the [AI Impact on Jobs 2030 Dataset](https://www.kaggle.com/da
 - RStudio
 
 
-## App : 
+## 📽️ App : 
 
 https://github.com/user-attachments/assets/5e6183b0-ba75-4270-8bf3-ccdc69b9364b
 
